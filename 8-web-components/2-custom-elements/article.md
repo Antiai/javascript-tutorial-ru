@@ -1,81 +1,81 @@
 
-# Custom elements
+# Пользовательские элементы
 
-We can create custom HTML elements, described by our class, with its own methods and properties, events and so on.
+Мы можем создавать пользовательские HTML-элементы, описываемые своим собственным классом со своими методами, свойствами, событиями и т.д.
 
-Once an custom element is defined, we can use it on par with built-in HTML elements.
+Как только пользовательский элемент определен, мы можем использовать его наравне с нативными HTML-элементами.
 
-That's great, as HTML dictionary is rich, but not infinite. There are no `<easy-tabs>`, `<sliding-carousel>`, `<beautiful-upload>`... Just think of any other tag we might need.
+Это здорово, так как HTML-словарь достаточно широк, но не безграничен. В нем не существует `<easy-tabs>`, `<sliding-carousel>`, `<beautiful-upload>`... или просто вообразите любой другой тег, который может нам понадобиться.
 
-We can define them with a special class, and then use as if they were always a part of HTML.
+Мы можем определить их через специальный класс, и потом использовать так же, как если бы они всегда были частью HTML.
 
-There are two kinds of custom elements:
+Существуют 2 вида пользовательских элементов:
 
-1. **Autonomous custom elements** -- "all-new" elements, extending the abstract `HTMLElement` class.
-2. **Customized built-in elements** -- extending built-in elements, like customized `HTMLButtonElement` etc.
+1. **Автономные пользовательские элементы** -- полностью новые элементы, расширяющие абстрактный `HTMLElement` класс.
+2. **Измененные встроенные элементы** -- расширяющие встроенные элементы, такие как `HTMLButtonElement` и т.п.
 
-First we'll create autonomous elements, and then customized built-in ones.
+Сначала мы создадим автономные элементы, а затем измененные встроенные.
 
-To create a custom element, we need to tell the browser several details about it: how to show it, what to do when the element is added or removed to page, etc.
+Для создания пользовательского элемента нам необходимо сообщить браузеру некоторые детали этого элемента: как отображать, что делать, когда элемент добавлен или удален со страницы и т.д.
 
-That's done by making a class with special methods. That's easy, as there are only few methods, and all of them are optional.
+Это достигается через создание класса с особыми методами. Это просто, поскольку существуют только несколько таких методов, и все они необязательные.
 
-Here's a sketch with the full list:
+Набросок с полным списком методов:
 
 ```js
 class MyElement extends HTMLElement {
   constructor() {
     super();
-    // element created
+    // элемент создан
   }
 
   connectedCallback() {
-    // browser calls it when the element is added to the document
-    // (can be called many times if an element is repeatedly added/removed)
+    // браузер вызывает этот метод, когда элемент добавляется в объект document
+    // (может быть многократно вызван, если элемент периодически добавляется/удаляется)
   }
 
   disconnectedCallback() {
-    // browser calls it when the element is removed from the document
-    // (can be called many times if an element is repeatedly added/removed)
+    // браузер вызывает этот метод, когда элемент удаляется из объекта document
+    // (может быть многократно вызван, если элемент периодически добавляется/удаляется)
   }
 
   static get observedAttributes() {
-    return [/* array of attribute names to monitor for changes */];
+    return [/* массив имен аттрибутов для отслеживания изменений */];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    // called when one of attributes listed above is modified
+    // вызывается в момент, когда один из перечисленных выше атрибутов изменен
   }
 
   adoptedCallback() {
-    // called when the element is moved to a new document
-    // (happens in document.adoptNode, very rarely used)
+    // вызывается, когда элемент перемещается в новый document
+    // (происходит в document.adoptNode, очень редко используется)
   }
 
-  // there can be other element methods and properties
+  // здесь могут быть другие методы и свойства элемента
 }
 ```
 
-After that, we need to register the element:
+После этого, нам необходимо зарегистрировать элемент:
 
 ```js
-// let the browser know that <my-element> is served by our new class
+// даем браузеру знать, что <my-element> обслуживается нашим новым классом
 customElements.define("my-element", MyElement);
 ```
 
-Now for any HTML elements with tag `<my-element>`, an instance of `MyElement` is created, and the aforementioned methods are called. We also can `document.createElement('my-element')` in JavaScript.
+Теперь для любых HTML-элементов с тэгом `<my-element>` создается экземпляр `MyElement` и вызываются вышеупомянутые методы. Мы также можем вызвать `document.createElement('my-element')` в JavaScript.
 
-```smart header="Custom element name must contain a hyphen `-`"
-Custom element name must have a hyphen `-`, e.g. `my-element` and `super-button` are valid names, but `myelement` is not.
+```smart header="Имя пользовательского элемента должно содержать дефис `-`"
+Имя пользовательского элемента должно содержать дефис `-`, например `my-element` и `super-button` - допустимые имена, а `myelement` уже нет.
 
-That's to ensure that there are no name conflicts between built-in and custom HTML elements.
+Это необходимо для того, чтобы гарантировать отсутствие конфликтов имен между встроенными и пользовательскими HTML-элементами.
 ```
 
-## Example: "time-formatted"
+## Пример: "time-formatted"
 
-For example, there already exists `<time>` element in HTML, for date/time. But it doesn't do any formatting by itself.
+Например, существует элемент `<time>` в HTML, для вывода даты/времени. Но он не выполняет никакого форматирования сам по себе.
 
-Let's create `<time-formatted>` element that displays the time in a nice, language-aware format:
+Создадим элемент `<time-formatted>`, который отображает время в удобном формате с учетом локали:
 
 
 ```html run height=50 autorun="no-epub"
@@ -115,41 +115,41 @@ customElements.define("time-formatted", TimeFormatted); // (2)
 ></time-formatted>
 ```
 
-1. The class has only one method `connectedCallback()` -- the browser calls it when `<time-formatted>` element is added to page (or when HTML parser detects it), and it uses the built-in [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) data formatter, well-supported across the browsers, to show a nicely formatted time.
-2. We need to register our new element by `customElements.define(tag, class)`.
-3. And then we can use it everywhere.
+1. Класс имеет только один метод `connectedCallback()` -- браузер вызывает его, когда элемент `<time-formatted>` добавляется на страницу (или когда HTML-парсер определяет его), а так же для удобного форматирования времени используется встроенная утилита форматирования дат [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat), имеющая хорошую кроссбраузерную поддержку.
+2. Мы должны зарегистрировать наш новый элемент через `customElements.define(tag, class)`.
+3. И теперь мы можем использовать его повсюду.
 
 
-```smart header="Custom elements upgrade"
-If the browser encounters any `<time-formatted>` elements before `customElements.define`, that's not an error. But the element is yet unknown, just like any non-standard tag.
+```smart header="Модернизация пользовательских элементов"
+Если браузер встречает какие-либо `<time-formatted>` элементы до вызова `customElements.define`, это не ошибка. Просто элемент еще неизвестен, как и любой другой нестандартный тэг.
 
-Such "undefined" elements can be styled with CSS selector `:not(:defined)`.
+Такие "undefined" элементы могут быть стилизованы через CSS-селектор `:not(:defined)`.
 
-When `customElement.define` is called, they are "upgraded": a new instance of `TimeFormatted`
-is created for each, and `connectedCallback` is called. They become `:defined`.
+Когда вызывается `customElement.define`, они "модернизируются": для каждого элемента
+создается новый экземпляр класса `TimeFormatted`, и вызывается метод `connectedCallback`. Они становятся `:defined`.
 
-To get the information about custom elements, there are methods:
-- `customElements.get(name)` -- returns the class for a custom element with the given `name`,
-- `customElements.whenDefined(name)` -- returns a promise that resolves (without value) when a custom element with the given `name` becomes defined.
+Для получения информации о пользовательских элементах существуют методы:
+- `customElements.get(name)` -- возвращает класс по значению указанного `name` пользовательского элемента,
+- `customElements.whenDefined(name)` -- возвращает промис, который выполняется (не возвращая значения), когда пользовательский элемент с указанным `name` становится определенным.
 ```
 
-```smart header="Rendering in `connectedCallback`, not in `constructor`"
-In the example above, element content is rendered (created) in `connectedCallback`.
+```smart header="Вывод в `connectedCallback`, не в `constructor`"
+В примере выше, содержимое элемента выводится(создается) в `connectedCallback`.
 
-Why not in the `constructor`?
+Почему не в `constructor`?
 
-The reason is simple: when `constructor` is called, it's yet too early. The element instance is created, but not populated yet. The browser did not yet process/assign attributes at this stage: calls to `getAttribute` would return `null`. So we can't really render there.
+Причина проста: когда вызывается `constructor`, еще слишком рано. Экземпляр элемента уже создан, но еще не размещен. Браузер еще не обработал/присвоил атрибуты на этом этапе: вызов `getAttribute` вернул бы `null`. Поэтому мы действительно не можем выводить там.
 
-Besides, if you think about it, that's better performance-wise -- to delay the work until it's really needed.
+Кроме того, если задуматься, так лучше с точки зрения производительности -- отложить работу до тех пор, когда это станет действительно необходимо.
 
-The `connectedCallback` triggers when the element is added to the document. Not just appended to another element as a child, but actually becomes a part of the page. So we can build detached DOM, create elements and prepare them for later use. They will only be actually rendered when they make it into the page.
+`connectedCallback` срабатывает, когда элемент добавлен в document. Не просто, когда вставлен в другой элемент в качестве дочернего, а в момент, когда уже стал частью страницы. Так мы можем построить отдельный DOM, создать элементы и подготовить их для дальнейшего использования. Они будут выведены только тогда, когда это все уже выполнено на странице.
 ```
 
-## Observing attributes
+## Слежение за атрибутами
 
-In the current implementation of `<time-formatted>`, after the element is rendered, further attribute changes don't have any effect. That's strange for an HTML element. Usually, when we change an attribute, like `a.href`, we expect the change to be immediately visible. So let's fix this.
+В текущей реализации `<time-formatted>` после вывода элемента, дальнейшие изменения атрибута не произведут никакого эффекта. Это странно для HTML-элемента. Обычно, когда мы меняем атрибут, например `a.href`, мы ожидаем, что изменения произойдут незамедлительно. Итак, давайте исправим это.
 
-We can observe attributes by providing their list in `observedAttributes()` static getter. For such attributes, `attributeChangedCallback` is called when they are modified. It doesn't trigger for an attribute for performance reasons.
+Мы можем следить за атрибутами, передав их список в статический геттер `observedAttributes()`. Для таких атрибутов вызывается `attributeChangedCallback`, когда они изменяются. Он не выполняется для любого атрибута из соображений производительности.
 
 Here's a new `<time-formatted>`, that auto-updates when attributes change:
 
